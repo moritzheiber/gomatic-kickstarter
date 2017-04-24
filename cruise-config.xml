@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cruise xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="cruise-config.xsd" schemaVersion="90">
+  <server artifactsdir="artifacts" agentAutoRegisterKey="verysecurekey" commandRepositoryLocation="default" serverId="73666ed8-9a26-4dcc-8ee7-2856178c59fd" />
+  <agents>
+    <agent hostname="go-agent" ipaddress="172.17.0.3" uuid="c233871a-b938-4b47-ae8d-ee82d64c58a1">
+      <resources>
+        <resource>gocd</resource>
+      </resources>
+    </agent>
+  </agents>
+</cruise>
