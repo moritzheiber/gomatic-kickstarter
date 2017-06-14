@@ -1,3 +1,5 @@
 flake8
 docker-py==1.9.0
-gomatic>=0.4.14
+
+# Note: This should be reverted to use the native gomatic package once this PR has been merged: https://github.com/gocd-contrib/gomatic/pull/10
+-e 'git+https://github.com/fbernitt/gomatic.git@default_job_timeout#egg=gomatic'

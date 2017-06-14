@@ -47,7 +47,7 @@ for p in [example1, example2]:
     p.prepare()
 
 example1.configure()
-example2.set_dependency(example1).configure()
+example2.set_dependency(example1.dependency_ref).configure()
 
 # Upload to GoCD
 cfg.save_updated_config()

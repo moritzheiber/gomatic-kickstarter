@@ -7,8 +7,18 @@ class GomaticPipeline:
         self.configurator = configurator
         self.environment = environment
 
+
+class DependencyReference:
+    def __init__(self, pipeline, stage, name=None):
+        self.pipeline = pipeline.name
+        self.stage = stage.name
+        self.name = name
+
     def to_material(self):
-        return PipelineMaterial(self.pipeline, self.stage)
+        return PipelineMaterial(
+            self.pipeline,
+            self.stage,
+            self.name)
 
     def dependency_label_variable(self):
         suffix = re.sub('[^\w]+', '_', self.pipeline)
@@ -25,21 +35,23 @@ class FirstExamplePipeline(GomaticPipeline):
         self.job_name = 'Silly_Output'
 
     def configure(self):
-        self.pipeline = self.configurator \
+        pipeline = self.configurator \
             .ensure_pipeline_group(self.pipeline_group) \
             .ensure_replacement_of_pipeline(self.pipeline_name)
 
-        self.pipeline.set_git_url(self.repository)
+        pipeline.set_git_url(self.repository)
 
-        self.stage = self.pipeline \
+        stage = pipeline \
             .ensure_stage(self.stage_name) \
             .set_clean_working_dir()
 
-        self.job = self.stage \
+        job = stage \
             .ensure_job(self.job_name) \
             .ensure_resource("gocd")
 
-        self.job.add_task(ExecTask(['/bin/sh', '-c', 'echo "Foo!"']))
+        job.add_task(ExecTask(['/bin/sh', '-c', 'echo "Foo!"']))
+
+        self.dependency_ref = DependencyReference(pipeline, stage)
 
         return self
 
@@ -58,23 +70,22 @@ class SecondExamplePipeline(GomaticPipeline):
         return self
 
     def configure(self):
-        self.pipeline = self.configurator \
+        pipeline = self.configurator \
             .ensure_pipeline_group(self.pipeline_group) \
             .ensure_replacement_of_pipeline(self.pipeline_name)
 
-        self.pipeline.set_git_url(self.repository)
+        pipeline.set_git_url(self.repository)
+        pipeline.ensure_material(self.dependency_ref.to_material())
 
-#        self.pipeline.ensure_material(self.dependency_ref.to_material)
-
-        self.stage = self.pipeline \
+        stage = pipeline \
             .ensure_stage(self.stage_name) \
             .set_clean_working_dir()
 
-        self.job = self.stage \
+        job = stage \
             .ensure_job(self.job_name) \
             .ensure_resource("gocd")
 
-        self.job.add_task(ExecTask(['/bin/sh', '-c', 'echo "Bar!"']))
-#        self.job.add_task(ExecTask(['/bin/sh', '-c', 'echo "Dependency variable is %s"' % self.dependency_ref.dependency_label_variable()]))
+        job.add_task(ExecTask(['/bin/sh', '-c', 'echo "Bar!"']))
+        job.add_task(ExecTask(['/bin/sh', '-c', 'echo "Dependency variable is %s"' % self.dependency_ref.dependency_label_variable()]))
 
         return self
