@@ -1,3 +1,5 @@
+# THIS PROJECT IS DEPRECATED. PLEASE USE [THE TERRAFORM EXAMPLE](https://github.com/moritzheiber/gocd-kickstarter) INSTEAD :heart:
+
 # Gomatic Kickstarter
 
 A repository which lets you get started with Gomatic with a few examples.
